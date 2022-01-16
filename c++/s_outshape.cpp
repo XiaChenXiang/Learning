@@ -1,26 +1,14 @@
 #include <iostream>
-#include <cstdio>
-#include<stdlib.h>
+#include <stdlib.h>
 using namespace std;
 const int MAX = 20;
-int tan( int x , int y , int z)
-{
-    if( (x - y) / (1 + x*y) < (x - z) / (1 + x*z) )
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
+const double INFINITY = 2147483648;
 int main()
 {
     int a;
     cout<<"numbers of its spots"<<endl;
     cin>>a;
-    if( a < 3 || a>20)
+    if( a < 3 || a>20 )
     {
         cout<<"out of border"<<endl;
         return 1;
@@ -30,6 +18,7 @@ int main()
     int xborder[MAX];
     int yborder[MAX];
     int assist = 0;
+    double k[MAX][MAX];
     for( int i = 0; i < MAX; ++i )
     {
         xaxis[i] = yaxis[i] = xborder[i] = yborder[i] = 0;
@@ -39,37 +28,50 @@ int main()
         cout<<"Input the ["<<i+1<<"]th xaxis & yaxis"<<endl;
         cin>>xaxis[i]>>yaxis[i];
     }
-    double k[MAX][MAX];
     for( int i = 0 ; i < a ; ++i )
     {
         for( int j = 0 ; j < a ; ++j )
         {
-            if(xaxis[i] >= xaxis[j] )
+            if( i != j && xaxis[i] == xaxis[j] && yaxis[i] == yaxis[j] )
+            {
+                cout<<"no same spots"<<endl;
+                return 1;
+            }
+        }
+    }
+    cout<<"------ok------54--"<<endl ;
+    for( int i = 0 ; i < a ; ++i )
+    {
+        for( int j = 0 ; j < a ; ++j )
+        {
+            if(xaxis[i] > xaxis[j] )
             {
                 xborder[0] = xaxis[i];
                 yborder[0] = yaxis[i];
                 assist = i;
+                cout<<i<<"-"<<j<<endl;
+                cout<<"xborder"<<endl<<xborder[0]<<"------"<<xborder[1]<<endl<<"yborder"<<endl<<yborder[0]<<"------"<<yborder[1]<<endl;
             }
         }
     }
+    
     int n_border = 1;
     int now = 0;
-    int previous = 0;
-    int b_previous = 0;
+    cout<<"------ok------71--"<<endl ;
     for( int i = 0 ; i < a ; ++i )
     {
-        if( i != assist )
+        if( xaxis[i] != xaxis[assist] )
         {
             k[assist][i] = ( (yaxis[i] - yaxis[assist]) / (xaxis[i] - xaxis[assist]) );
         }
     }
     for( int i = 0 ; i < a ; ++i )
     {
-        if( i != assist )
+        if( xaxis[i] != xaxis[assist] )
         {
             for( int j = 0 ; j < a ; j++ )
             {
-                if( j != assist && k[assist][i] > k[assist][j] )
+                if( xaxis[j] != xaxis[assist] && k[assist][i] < k[assist][j] )
                 {
                     xborder[n_border] = xaxis[i];
                     yborder[n_border] = yaxis[i];
@@ -77,27 +79,44 @@ int main()
                 }
             }
         }
+        if( xaxis[i] == xaxis[assist] && i != assist && yaxis[i] > yaxis[assist] )
+        {
+            xborder[n_border] = xaxis[i];
+            yborder[n_border] = yaxis[i];
+            now = i;
+        }
     }
     n_border = n_border + 1;
-    previous = assist;
-    b_previous = now;
+    cout<<"------ok------103--"<<endl ;
+    cout<<"xborder"<<endl<<xborder[0]<<"------"<<xborder[1]<<endl<<"yborder"<<endl<<yborder[0]<<"------"<<yborder[1]<<endl;
     for( int i = now ; i != assist ; i = now )
     {
-        b_previous = now;
+        for( int m = 0 ; m < a ; ++m )
+        {
+            if( xaxis[m] < xaxis[now] )
+            {
+                k[now][m] = ( (yaxis[m] - yaxis[now]) / (xaxis[m] - xaxis[now]) );
+            }
+            if( xaxis[m] > xaxis[now] )
+            {
+                k[now][m] = ( (yaxis[m] - yaxis[now]) / (xaxis[m] - xaxis[now]) ) + 2 * INFINITY;
+            }
+            if( xaxis[m] == xaxis[now] && m != now && yaxis[m] > yaxis[now] )
+            {
+                k[now][m] = - INFINITY ;
+            }
+            if( xaxis[m] == xaxis[now] && m != now && yaxis[m] < yaxis[now] )
+            {
+                k[now][m] = INFINITY ;
+            }
+        }
         for( int j = 0 ; j < a ; ++j )
         {
-            for( int m = 0 ; m < a ; ++m )
-            {
-                if( m != now )
-                {
-                    k[now][m] = ( (yaxis[m] - yaxis[now]) / (xaxis[m] - xaxis[now]) );
-                }
-            }
             if( j != assist )
             {
                 for( int l = 0 ; l < a ; l++ )
                 {
-                    if( l != assist && tan( k[previous][i] , k[i][j] , k[i][l]) )
+                    if( l != assist && k[now][j] < k[now][l] )
                     {
                         xborder[n_border] = xaxis[j];
                         yborder[n_border] = yaxis[j];
@@ -107,8 +126,8 @@ int main()
             }
         }
         n_border = n_border + 1;
-        previous = b_previous;
     }
+     cout<<"------ok------103--"<<endl ;
     for( int i = n_border - 1; i >= 0 ; --i)
     {
         xborder[i] = xborder[i] - xborder[0];
