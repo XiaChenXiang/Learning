@@ -100,7 +100,7 @@ int main()
         }
     }
     n_border = n_border + 1;
-    cout<<"------ok------101--"<<endl ;
+    cout<<"------ok------103--"<<endl ;
     assist = origin;
     for( int i = now ; i != origin ; i = now )
     {
