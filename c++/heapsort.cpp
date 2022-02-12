@@ -4,7 +4,7 @@ using namespace std;
 int array[11] = {11,4,55,6,77,8,9,0,7,1,-1};
 //int array[11] = {11,10,9,88,77,660,5,44,3,290,48};
 int n_array = 11;
-int exchange(int* a, int* b)
+void exchange(int* a, int* b)
 {
     int c = *a;
     *a = *b;
